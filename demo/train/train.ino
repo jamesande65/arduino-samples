@@ -17,13 +17,13 @@ int doseTicketPin = 27;
 // кнопки
 int ticketsVal;
 int ticketsCount;
-int buttonsPin = 23;
+int buttonsPin = 34;
 
 
 // music variables TODO
-SoftwareSerial mySoftwareSerial(16, 17); // RX, TX
-DFRobotDFPlayerMini myDFPlayer;
-void printDetail(uint8_t type, int value);
+//SoftwareSerial mySoftwareSerial(16, 17); // RX, TX
+//DFRobotDFPlayerMini myDFPlayer;
+//void printDetail(uint8_t type, int value);
 
 
 // lights 4 pins TODO
@@ -81,18 +81,19 @@ void stopSucking (int drivePin)
     digitalWrite(drivePin, LOW);
 }
 
-void playTrack (int track) 
-{
-    myDFPlayer.play(track);
-}
+//void playTrack (int track) 
+//{
+//    myDFPlayer.play(track);
+//}
 
 
 
 
 // program setup
 void setup() {
-    mySoftwareSerial.begin(9600);
-    myDFPlayer.volume(30);
+//    mySoftwareSerial.begin(9600);
+//    Serial.begin(115200);
+//    myDFPlayer.volume(30);
 
     //сенсоры + движки
     pinMode (stopSensorBack, INPUT);
@@ -109,17 +110,15 @@ void setup() {
     servoSecond.attach(servoSecondPin);
 
     // buttons
+    Serial.begin(9600);
     pinMode (buttonsPin, INPUT);
-
-    // trainSound
-    playTrack(1);
 
     xTaskCreatePinnedToCore(
       Task1code,   /* Функция задачи */
       "Sensors",     /* Название задачи */
       10000,       /* Размер стека задачи */
       NULL,        /* Параметр задачи */
-      1,           /* Приоритет задачи */
+      2,           /* Приоритет задачи */
       &Sensors,      /* Идентификатор задачи, чтобы ее можно было отслеживать */
       0
     );          /* Ядро для выполнения задачи (0) */                  
@@ -130,7 +129,7 @@ void setup() {
       "Main",     /* Название задачи */
       10000,       /* Размер стека задачи */
       NULL,        /* Параметр задачи */
-      1,           /* Приоритет задачи */
+      3,           /* Приоритет задачи */
       &Main,      /* Идентификатор задачи, чтобы ее можно было отслеживать */
       1
     );          /* Ядро для выполнения задачи (1) */
@@ -151,12 +150,16 @@ void Task1code( void * pvParameters ){
       firstStart = false;
     } else {
       // ожидание сигнала остановки от датчика
-      if (digitalRead(stopSensorBack) == HIGH) {
-        moveTrain(driveBack);  
+      if (digitalRead(stopSensorBack) == LOW) {
+        stopTrain(driveBack);  
       } else if (digitalRead(stopSensorForward) == LOW) {
         stopTrain(driveForward); 
+      } else {
+        stopTrain(driveBack);
+        stopTrain(driveForward);
       }
     }
+//vTaskDelete(NULL);
   } 
 }
 
@@ -180,6 +183,10 @@ void Task2code( void * pvParameters ){
       ticketsCount = 6;
     }
 
+    Serial.println(ticketsCount);
+    
+    delay(100);
+
     // после сбора данных запускаем поезд с полученными данными
     if (ticketsCount) {
       // разворачиваем кран
@@ -194,21 +201,29 @@ void Task2code( void * pvParameters ){
         delay(delayDrive);
       }
 
-      moveTrain(driveForward);
+//      moveTrain(driveForward);
+
+      suck(pumpForward);
+      delay(1000);
+      stopSucking(pumpForward);
+      delay(500);
+      suck(pumpBack);
+      delay(1100);
+      stopSucking(pumpBack);
       
-      for (int i = 0; i < ticketsCount; i++) {
-        if (digitalRead(stopSensors) == LOW) {
-          stopTrain(driveForward);
-          suck(pumpForward);
-          delay(100);
-          stopSucking(pumpForward);
-          suck(pumpBack);
-          delay(100);
-          stopSucking(pumpBack);
-        }
-      }
+//      for (int i = 0; i < ticketsCount; i++) {
+//        if (digitalRead(stopSensors) == LOW) {
+//          stopTrain(driveForward);
+//          suck(pumpForward);
+//          delay(100);
+//          stopSucking(pumpForward);
+//          suck(pumpBack);
+//          delay(100);
+//          stopSucking(pumpBack);
+//        }
+//      }
       
-      moveTrain(driveForward);
+//      moveTrain(driveForward);
     
       //сворачиваем кран
       for (pos = servoSeconddeg; pos >= 1; pos -= 1) {
@@ -221,8 +236,6 @@ void Task2code( void * pvParameters ){
         servoFirst.write(pos);
         delay(delayDrive - 10);
       }
-    } else {
-      playTrack(2);
     }
   }
 }
@@ -230,5 +243,4 @@ void Task2code( void * pvParameters ){
 
 // program start
 void loop() {
-
 }
