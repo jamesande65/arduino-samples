@@ -4,6 +4,8 @@
 #include "DFRobotDFPlayerMini.h"
 #include <ESP32Servo.h>
 
+//for bratan
+
 
 bool firstStart = true;
 TaskHandle_t Sensors;
