@@ -22,23 +22,18 @@
 
 
 
-unsigned long lastflash;
-int RPM;
-
+const byte interruptPin = 5;
+volatile byte state = LOW;
+int val=0;
 void setup() {
-  Serial.begin(9600);  //открыть порт
-  attachInterrupt(0,sens,RISING); //подключить прерывание на 2 пин при повышении сигнала
+pinMode(interruptPin, INPUT_PULLUP);
+attachInterrupt(digitalPinToInterrupt(interruptPin), test, CHANGE);
+Serial.begin(9600);
 }
-void sens() {
-  RPM=(1000000.0/(float)(micros()-lastflash))*60;  //расчет
-  lastflash=micros();  //запомнить время последнего оборота
-}
-
 void loop() {
-  if ((micros()-lastflash)>1000000){ //если сигнала нет больше секунды
-    RPM=0;  //считаем что RPM 0
-  }
-   //вывод в порт
-    Serial.println(RPM);
-  delay(50);  //задержка для стабильности
+Serial.println(val/2);
+}
+void test() {
+state = !state;
+val++;
 }
