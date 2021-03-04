@@ -37,8 +37,10 @@ int lightRed;
 
 // stop sensor variables
 int stopSensorBack = 17;
-int stopSensors = 5;
-int stopSensorForward;  // TODO
+const byte interruptPin = 5;
+volatile byte state = LOW;
+int val=0;
+int stopSensorForward = 18;
 
 
 // drive variables
@@ -99,7 +101,8 @@ void setup() {
 
     //сенсоры + движки
     pinMode (stopSensorBack, INPUT);
-    pinMode (stopSensors, INPUT);
+    pinMode(interruptPin, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(interruptPin), test, CHANGE);
     pinMode(driveForward, OUTPUT);
     pinMode(driveBack, OUTPUT);
 
@@ -137,8 +140,6 @@ void setup() {
     );          /* Ядро для выполнения задачи (1) */
     delay(500);
 }
- 
-
 
 void Task1code( void * pvParameters ){
   for(;;){
@@ -164,7 +165,6 @@ void Task1code( void * pvParameters ){
 //vTaskDelete(NULL);
   } 
 }
-
 
 void Task2code( void * pvParameters ){
   for(;;){
@@ -203,29 +203,6 @@ void Task2code( void * pvParameters ){
         delay(delayDrive);
       }
 
-//      moveTrain(driveForward);
-
-      suck(pumpForward);
-      delay(1000);
-      stopSucking(pumpForward);
-      delay(500);
-      suck(pumpBack);
-      delay(1100);
-      stopSucking(pumpBack);
-      
-//      for (int i = 0; i < ticketsCount; i++) {
-//        if (digitalRead(stopSensors) == LOW) {
-//          stopTrain(driveForward);
-//          suck(pumpForward);
-//          delay(100);
-//          stopSucking(pumpForward);
-//          suck(pumpBack);
-//          delay(100);
-//          stopSucking(pumpBack);
-//        }
-//      }
-      
-//      moveTrain(driveForward);
     
       //сворачиваем кран
       for (pos = servoSeconddeg; pos >= 1; pos -= 1) {
@@ -239,6 +216,23 @@ void Task2code( void * pvParameters ){
         delay(delayDrive - 10);
       }
     }
+  }
+}
+
+void test() {
+  state = !state;
+  val++;
+  if (val <= ticketsCount) {
+    stopTrain(driveForward);
+    suck(pumpForward);
+    delay(100);
+    stopSucking(pumpForward);
+    suck(pumpBack);
+    delay(100);
+    stopSucking(pumpBack);
+    moveTrain(driveForward);
+  } else {
+    moveTrain(driveForward);
   }
 }
 
