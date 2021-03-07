@@ -1,6 +1,5 @@
 // including libs
 #include "Arduino.h"
-#include <SoftwareSerial.h>
 #include "DFRobotDFPlayerMini.h"
 #include <ESP32Servo.h>
 
@@ -19,7 +18,7 @@ int doseTicketPin = 27;
 // кнопки
 int ticketsVal;
 int ticketsCount;
-int buttonsPin = 34;
+int buttonsPin = 14;
 
 
 // music variables TODO
@@ -29,10 +28,10 @@ int buttonsPin = 34;
 
 
 // lights 4 pins TODO
-int lightWhite;
-int lightBlue;
-int lightGreen;
-int lightRed;
+int lightWhite = 33;
+int lightBlue = 25;
+int lightGreen = 13;
+int lightRed = 32;
 
 
 // stop sensor variables
@@ -171,6 +170,11 @@ void Task2code( void * pvParameters ){
     // режим ожидания (лампы, величина дозы, ожидание кнопки)
     ticketsVal = analogRead(buttonsPin);
     //doseTicket = analogRead(doseTicketPin);
+    if (analogRead(doseTicketPin) == HIGH) {
+      doseTicket = 600;  
+    } else {
+      doseTicket = 300;
+    }
     if (ticketsVal > 3900){
       ticketsCount = 1;
     } else if (ticketsVal > 2900) {
@@ -222,13 +226,14 @@ void Task2code( void * pvParameters ){
 void test() {
   state = !state;
   val++;
-  if (val <= ticketsCount) {
+  if (val < ticketsCount) {
     stopTrain(driveForward);
     suck(pumpForward);
-    delay(100);
+    delay(doseTicket);
     stopSucking(pumpForward);
+    delay(300);
     suck(pumpBack);
-    delay(100);
+    delay(doseTicket + 30);
     stopSucking(pumpBack);
     moveTrain(driveForward);
   } else {

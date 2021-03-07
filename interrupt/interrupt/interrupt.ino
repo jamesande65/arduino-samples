@@ -22,7 +22,7 @@
 
 
 
-const byte interruptPin = 5;
+const byte interruptPin = 3;
 volatile byte state = LOW;
 int val=0;
 void setup() {
