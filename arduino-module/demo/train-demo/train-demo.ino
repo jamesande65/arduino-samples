@@ -48,7 +48,7 @@ void loop() {
   digitalWrite(2, HIGH); //red light
   delay (5000);
   val1 = digitalRead (8); // читаем сенсор
-  if (val == HIGH) {
+  if (val1 == HIGH) {
     //digitalWrite(, LOW)
     digitalWrite(2, LOW);
   } else {
@@ -81,7 +81,7 @@ void loop() {
   delay(2000);
   digitalWrite( HIGH); //светофор маленький разрешающий
   val1 = digitalRead (8); // читаем сенсор
-  if (val == HIGH) {
+  if (val1 == HIGH) {
     //digitalWrite(, LOW)
     digitalWrite(2, LOW);
   } else {
