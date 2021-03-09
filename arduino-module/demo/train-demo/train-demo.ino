@@ -44,8 +44,8 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(2, HIGH); //blue light
-  digitalWrite(2, HIGH); //red light
+  digitalWrite(2,HIGH); //blue light
+  digitalWrite(2,HIGH); //red light
   delay (5000);
   val1 = digitalRead (8); // читаем сенсор
   if (val1 == HIGH) {
@@ -77,9 +77,9 @@ void loop() {
     taskFunc(6);
   }
 
-  digitalWrite( LOW);
+  digitalWrite(LOW);
   delay(2000);
-  digitalWrite( HIGH); //светофор маленький разрешающий
+  digitalWrite(HIGH); //светофор маленький разрешающий
   val1 = digitalRead (8); // читаем сенсор
   if (val1 == HIGH) {
     //digitalWrite(, LOW)
@@ -90,7 +90,7 @@ void loop() {
 }
 
 
-void taskFunc(int num) 
+void taskFunc(int num) {
   servo1.write(107);
   delay(1000);
   for (int i = 0; i < num; i++) {
