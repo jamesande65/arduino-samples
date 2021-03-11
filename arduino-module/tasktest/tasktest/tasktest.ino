@@ -21,13 +21,13 @@ Servo servo2;
   myButt5.setType(LOW_PULL);
   myButt6.setType(LOW_PULL);
   
-  servo1.attach(6);
-  servo2.attach(7);
+  servo1.attach(9);
+  servo2.attach(10);
   servo2.write(0);
   servo1.write(23);
 }
 void loop() {
-  int analog = analogRead(A0);
+  int analog = analogRead(A1);
   // для начала нужно вывести и запомнить значение для каждой кнопки
 //  Serial.println(analog);
   // проверяем у каждой кнопки свой диапазон (+- 20 от полученного значения)

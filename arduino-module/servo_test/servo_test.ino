@@ -11,8 +11,8 @@ Servo servo2;
 
 void setup() {
   //servo1.attach(6);
-  servo1.attach(6);
-  servo2.attach(7);
+  servo1.attach(9);
+  servo2.attach(10);
   //servo1.write(23);
 }
 

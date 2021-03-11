@@ -5,7 +5,7 @@ void setup() {
 }
 
 void loop() {
-  int analog = analogRead(A0);
+  int analog = analogRead(A1);
   Serial.println(analog);
   delay(1000);
 }
