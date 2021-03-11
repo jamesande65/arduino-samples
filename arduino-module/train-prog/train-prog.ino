@@ -107,7 +107,6 @@ void setup() {
 
   pinMode(interruptPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(interruptPin), managePump, CHANGE);
-
 }
 
 void loop() {
