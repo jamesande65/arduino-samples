@@ -1,15 +1,31 @@
 
-#include "GyverButton.h"
 #include <Servo.h>
-GButton myButt1;
-GButton myButt2;
-GButton myButt3;
-GButton myButt4;
-GButton myButt5;
-GButton myButt6;
+#include <AnalogKey.h>
+#include <GyverButton.h>
+GButton myButt1(A1);
+GButton myButt2(A1);
+GButton myButt3(A1);
+GButton myButt4(A1);
+GButton myButt5(A1);
+GButton myButt6(A1);
 
 Servo servo1;
 Servo servo2;
+
+
+void taskFunc(int num) {
+  Serial.println(num);
+  servo1.write(107);
+  delay(1000);
+  for (int i = 0; i < num; i++) {
+    servo2.write(210);
+    delay(1000);
+    servo2.write(0);
+    delay(1000);
+  }
+  servo1.write(23); 
+  delay(1000);
+}
 
  void setup() {
   Serial.begin(9600);
@@ -29,7 +45,7 @@ Servo servo2;
 void loop() {
   int analog = analogRead(A1);
   // для начала нужно вывести и запомнить значение для каждой кнопки
-//  Serial.println(analog);
+  //Serial.println(analog);
   // проверяем у каждой кнопки свой диапазон (+- 20 от полученного значения)
   myButt1.tick(analog < 775 && analog > 735);
   myButt2.tick(analog < 595 && analog > 555);
@@ -51,18 +67,4 @@ void loop() {
   } else if (myButt6.isHolded()) {
     taskFunc(6);
   }
-}
-
-
-void taskFunc(int num) {
-  servo1.write(107);
-  delay(1000);
-  for (int i = 0; i < num; i++) {
-    servo2.write(210);
-    delay(1000);
-    servo2.write(0);
-    delay(1000);
-  }
-  servo1.write(23); 
-  delay(1000);
 }
